@@ -1,51 +1,75 @@
-import { Router } from "express";
-import { GameState } from "@shared/models/game";
+import { Router } from 'express';
+import { GameState } from '@shared/models/game'; // Assuming you have a shared GameState model
+import { connectToDatabase } from '../utils/mongodb'; // MongoDB connection utility
+import { v4 as uuidv4 } from 'uuid'; // UUID generation library
 
 const router = Router();
 
-// POST /api/generate
-router.post("/generate", (req, res) => {
+// POST /api/generate - Generate a new game state
+router.post('/generate', async (req, res) => {
   const { numTubes, numColors, tubeHeight } = req.body;
 
+// TODO Create a basic game state (dummy generation for now)
   const gameState: GameState = {
-    uuid: "unique-game-uuid",
-    tubes: Array(numTubes).fill(""), // TODO: add actual creation logic.
+    uuid: uuidv4(),
+    tubes: Array(numTubes).fill(""), 
     numTubes,
     tubeHeight,
-    numColors,
+    numColors
   };
 
-  res.status(200).json(gameState);
+  try {
+    const db = await connectToDatabase();
+    await db.collection('games').insertOne(gameState); 
+    res.status(200).json(gameState);
+  } catch (error) {
+    console.error('Error generating game:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
-// POST /api/solve
-router.post("/solve", (req, res) => {
-  const { uuid, tubes } = req.body;
-  // TODO
-  const solution = {
-    steps: [
-      { fromTube: 1, toTube: 4 },
-      { fromTube: 2, toTube: 1 },
-    ],
-    solved: true,
-  };
+// POST /api/share - Share the current game state with a UUID
+router.post('/share', async (req, res) => {
+  const { tubes, numTubes, tubeHeight, numColors } = req.body;
 
-  res.status(200).json(solution);
-});
-
-// GET /api/game/:uuid
-router.get("/game/:uuid", (req, res) => {
-  const { uuid } = req.params;
-  //TODO
   const gameState: GameState = {
-    uuid,
-    tubes: ["abc", "bca", "cab", ""],
-    numTubes: 6,
-    tubeHeight: 4,
-    numColors: 4,
+    uuid: uuidv4(),
+    tubes,
+    numTubes,
+    tubeHeight,
+    numColors
   };
 
-  res.status(200).json(gameState);
+  try {
+    const db = await connectToDatabase();
+    await db.collection('games').insertOne(gameState); 
+    res.status(200).json({
+      uuid: gameState.uuid,
+      shareableUrl: `/game/${gameState.uuid}`
+    });
+  } catch (error) {
+    console.error('Error sharing game:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// GET /api/game/:uuid - Fetch a game state by UUID
+router.get('/game/:uuid', async (req, res) => {
+  const { uuid } = req.params;
+
+  try {
+    const db = await connectToDatabase();
+    const gameState = await db.collection('games').findOne({ uuid });
+
+    if (!gameState) {
+      return res.status(404).json({ error: 'Game not found' });
+    }
+
+    res.status(200).json(gameState);
+  } catch (error) {
+    console.error('Error fetching game:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 export default router;

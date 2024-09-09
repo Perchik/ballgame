@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { connectToDatabase } from "./utils/mongodb";
+import gameRoutes from "./routes/game";
 
 dotenv.config();
 
@@ -19,6 +20,8 @@ app.use(express.json());
     process.exit(1); // Exit the process with an error
   }
 })();
+
+app.use("/api", gameRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
