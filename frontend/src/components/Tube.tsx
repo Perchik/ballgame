@@ -1,20 +1,21 @@
-import React from 'react';
-import { Box, VStack } from '@chakra-ui/react';
-import Ball from './Ball';
+import React from "react";
+import { Box, VStack } from "@chakra-ui/react";
+import Ball from "./Ball";
 
 interface TubeProps {
-  balls: string; // This will be a string like "ab" or "ba"
+  balls: string;
 }
 
 const Tube: React.FC<TubeProps> = ({ balls }) => {
-  const ballList = balls.split(''); // Split the string to get individual balls
+  const ballList = balls.split(""); // Split the string to get individual balls
 
   return (
     <Box
       width="60px"
       height="120px"
       border="2px solid black"
-      borderRadius="10px"
+      borderRadius="0 0 30px 30px"
+      borderTop="hidden"
       display="flex"
       justifyContent="flex-end"
       alignItems="center"
