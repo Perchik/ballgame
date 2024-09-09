@@ -1,11 +1,10 @@
-// frontend/src/App.tsx
 import React, { useState } from "react";
 import { Box, Button, Heading, HStack, VStack, Text } from "@chakra-ui/react";
 import { useGameStore } from "./store/useGameStore";
 import Tube from "./components/Tube";
 
 const App: React.FC = () => {
-  const { uuid, tubes, numTubes, tubeHeight, numColors, setGame } =
+  const { uuid, tubes, numTubes, tubeHeight, numColors, setGame, selectTube } =
     useGameStore();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,8 +26,13 @@ const App: React.FC = () => {
     }
   };
 
+  // Handle deselection by clicking anywhere on the page
+  const handleDeselect = () => {
+    selectTube(null);
+  };
+
   return (
-    <VStack spacing={6} align="center" mt={8}>
+    <VStack spacing={6} align="center" mt={8} onClick={handleDeselect}>
       <Heading>Ball Sorting Game</Heading>
 
       <Button
@@ -56,11 +60,10 @@ const App: React.FC = () => {
         </Box>
       )}
 
-      {/* Display tubes */}
       {tubes.length > 0 && (
-        <HStack spacing={8} mt={4}>
+        <HStack spacing={8} mt={4} onClick={(e) => e.stopPropagation()}>
           {tubes.map((tube, index) => (
-            <Tube key={index} balls={tube} />
+            <Tube key={index} balls={tube} index={index} />
           ))}
         </HStack>
       )}

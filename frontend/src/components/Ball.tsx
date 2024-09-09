@@ -1,12 +1,13 @@
-import React from 'react';
-import { Box } from '@chakra-ui/react';
+import React from "react";
+import { Box } from "@chakra-ui/react";
 
 interface BallProps {
   color: string;
 }
 
 const Ball: React.FC<BallProps> = ({ color }) => {
-  const backgroundColor = color === 'a' ? 'red' : color === 'b' ? 'blue' : 'transparent';
+  const backgroundColor =
+    color === "a" ? "red" : color === "b" ? "blue" : "transparent";
 
   return (
     <Box
@@ -15,7 +16,10 @@ const Ball: React.FC<BallProps> = ({ color }) => {
       borderRadius="50%"
       backgroundColor={backgroundColor}
       border="1px solid black"
-      mb={2}
+      boxSizing="border-box"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
     />
   );
 };
