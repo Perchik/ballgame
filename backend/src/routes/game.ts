@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { GameState } from "../../../shared/models/game";
+import { GameState } from "@shared/models/game";
 
 const router = Router();
 
@@ -21,7 +21,7 @@ router.post("/generate", (req, res) => {
 // POST /api/solve
 router.post("/solve", (req, res) => {
   const { uuid, tubes } = req.body;
-
+  // TODO
   const solution = {
     steps: [
       { fromTube: 1, toTube: 4 },
@@ -36,7 +36,7 @@ router.post("/solve", (req, res) => {
 // GET /api/game/:uuid
 router.get("/game/:uuid", (req, res) => {
   const { uuid } = req.params;
-
+  //TODO
   const gameState: GameState = {
     uuid,
     tubes: ["abc", "bca", "cab", ""],
