@@ -1,9 +1,11 @@
 // frontend/src/App.tsx
 import React, { useState } from "react";
-import { Box, Button, Heading, Spinner, VStack, Text } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, VStack, Text } from "@chakra-ui/react";
 import { useGameStore } from "./store/useGameStore";
+import Tube from "./components/Tube";
+
 const App: React.FC = () => {
-  const { uuid, tubes, numTubes, tubeHeight, numColors, setGame, resetGame } =
+  const { uuid, tubes, numTubes, tubeHeight, numColors, setGame } =
     useGameStore();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -15,11 +17,6 @@ const App: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          numTubes: 4,
-          numColors: 3,
-          tubeHeight: 4,
-        }),
       });
       const data = await response.json();
       setGame(data);
@@ -56,19 +53,17 @@ const App: React.FC = () => {
           <Text>Number of Tubes: {numTubes}</Text>
           <Text>Tube Height: {tubeHeight}</Text>
           <Text>Number of Colors: {numColors}</Text>
-          <Text mt={2} fontWeight="bold">
-            Tubes:
-          </Text>
-          {tubes.map((tube, index) => (
-            <Text key={index}>
-              Tube {index + 1}: {tube || "[Empty]"}
-            </Text>
-          ))}
         </Box>
       )}
 
-      {/* Loading Spinner */}
-      {isLoading && <Spinner size="xl" />}
+      {/* Display tubes */}
+      {tubes.length > 0 && (
+        <HStack spacing={8} mt={4}>
+          {tubes.map((tube, index) => (
+            <Tube key={index} balls={tube} />
+          ))}
+        </HStack>
+      )}
     </VStack>
   );
 };
