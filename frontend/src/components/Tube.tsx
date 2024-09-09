@@ -9,20 +9,24 @@ interface TubeProps {
 }
 
 const Tube: React.FC<TubeProps> = ({ balls, index }) => {
-  const { selectedTubeIndex, selectTube } = useGameStore();
+  const { selectedTubeIndex, selectTube, moveBall } = useGameStore();
 
   const isSelected = selectedTubeIndex === index;
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent deselecting when clicking on the tube itself
-    if (isSelected) {
+    if (selectedTubeIndex === null) {
+      selectTube(index);
+    } else if (selectedTubeIndex === index) {
+      // Deselect if already selected
       selectTube(null);
     } else {
-      selectTube(index);
+      // If another tube is already selected, attempt to move the balls
+      moveBall(index);
     }
   };
 
-  const ballList = balls.split(""); // Split the string to get individual balls
+  const ballList = balls.split("").reverse(); // Split the string to get individual balls, reverse to make the top of the tube be the end of the array.
 
   return (
     <Box
@@ -36,10 +40,10 @@ const Tube: React.FC<TubeProps> = ({ balls, index }) => {
       boxSizing="border-box"
       display="flex"
       justifyContent="center"
-      alignItems="center"
+      alignItems="flex-end"
+      paddingBottom={isSelected ? "5px" : "8px"}
       onClick={handleClick}
       cursor="pointer"
-      marginBottom={isSelected ? "0" : "4px"}
     >
       <VStack spacing={2}>
         {ballList.map((ball, index) => (
