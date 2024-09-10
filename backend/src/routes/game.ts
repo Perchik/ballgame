@@ -11,9 +11,9 @@ router.post("/generate", async (req, res) => {
 
   const gameState: GameState = {
     uuid: uuidv4(),
-    tubes: ["ab", "ba", ""], // TODO actually generate game
+    tubes: ["abb", "aab", ""], // TODO actually generate game
     numTubes: 3,
-    tubeHeight: 2,
+    tubeHeight: 3,
     numColors: 2,
   };
 
